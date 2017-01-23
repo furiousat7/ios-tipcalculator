@@ -12,9 +12,10 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var tipAmount: UILabel!
     @IBOutlet weak var totalAmount: UILabel!
-    @IBOutlet weak var billAmount: UITextField!
     @IBOutlet weak var tipSelector: UISegmentedControl!
+    @IBOutlet weak var customTip: UITextField!
     
+    @IBOutlet weak var billAmount: UITextField!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -28,21 +29,40 @@ class ViewController: UIViewController {
     @IBAction func onTap(_ sender: Any) {
         view.endEditing(true)
     }
-    @IBAction func onBillAmountEdit(_ sender: Any) {        
-        
+    @IBAction func onBillAndCustomTipAmountEdit(_ sender: AnyObject) {
+        self.updateTipAndTotal()
     }
     
-    @IBAction func onChangeSelector(_ sender: Any) {
-        let billAmount = Double(self.billAmount.text!) ?? 0
-        //print (billAmount)
-        let tipSelectorValues = [0.18, 0.2, 0.25]
+    @IBAction func onChangeSelector(_ sender: AnyObject) {
+        let tipSelectorValues = [18, 20, 25]
         let tipAmountVar = tipSelector.selectedSegmentIndex
-        
         let tipPercent = tipSelectorValues[tipAmountVar]
-        let tipAmount1 = billAmount * tipPercent
-        let totalAmount1 = billAmount + tipAmount1
-        tipAmount.text = "\(tipAmount1)"
-        totalAmount.text = "\(totalAmount1)"
+        customTip.text = "\(tipPercent)"
+        updateTipAndTotal()
+    }
+    
+    @IBAction func onBillAmountEdit(_ sender: Any) {
+        print (self.billAmount.text!)
+    }
+    
+    func appendPercentAtEnd(_ input: String) -> String {
+        return "\(input)%"
+    }
+    
+    func removePercentFromText(_ input: String) -> String {
+        if (input[input.length - 1] == "%"){
+            return input[0..input.length]
+        }
+        
+    }
+    func updateTipAndTotal() {
+        let billValue = Double(self.billAmount.text!) ?? 0
+        let tipValue = Double(self.customTip.text!) ?? 0
+        
+        let calculatedTipAmount = billValue * tipValue/100        
+        tipAmount.text = "\(calculatedTipAmount)"
+        totalAmount.text = "\(billValue + calculatedTipAmount)"
+        
     }
 
 }
